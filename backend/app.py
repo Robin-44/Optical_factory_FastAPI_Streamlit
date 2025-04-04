@@ -97,14 +97,14 @@ def recommander(profil: ProfilUtilisateur):
 
     recommandations = []
     for id_ in ids:
-        m = df.loc[id_].to_dict()  # 🔑 convertir en dict natif
+        m = df.loc[id_]
         recommandations.append({
             "id": id_,
-            "Marque": m.get("Marque"),
-            "Forme": m.get("Forme"),
-            "Style": m.get("Style"),
-            "Couleur": m.get("Couleur"),
-            "Taille": f"{m.get('Taille_Lens')}-{m.get('Taille_Bridge')}-{m.get('Taille_Temple')}"
+            "Marque": str(m["Marque"]),
+            "Forme": str(m["Forme"]),
+            "Style": str(m["Style"]),
+            "Couleur": str(m["Couleur"]),
+            "Taille": f"{int(m['Taille_Lens'])}-{int(m['Taille_Bridge'])}-{int(m['Taille_Temple'])}"
         })
 
     return {"montures_recommandees": recommandations}
