@@ -4,13 +4,6 @@ FROM python:3.12-slim
 # Créer le dossier de travail
 WORKDIR /app
 
-# # Copier les fichiers nécessaires
-# COPY ./app.py ./requirements.txt ./models ./data ./
-
-# # Installer les dépendances
-# RUN pip install --upgrade pip
-# RUN pip install -r requirements.txt
-
 # Copier requirements et installer
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt

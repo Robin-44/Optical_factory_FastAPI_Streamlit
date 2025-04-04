@@ -1,5 +1,6 @@
 # 🧠 Ne pas inclure les notebooks
 notebooks/
+frontend/
 
 # 🧹 Dossiers courants à ignorer
 __pycache__/
