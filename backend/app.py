@@ -104,7 +104,6 @@ def recommander(profil: ProfilUtilisateur):
             "Forme": str(m["Forme"]),
             "Style": str(m["Style"]),
             "Couleur": str(m["Couleur"]),
-            "Taille": f"{int(m['Taille_Lens'])}-{int(m['Taille_Bridge'])}-{int(m['Taille_Temple'])}"
         })
 
     return {"montures_recommandees": recommandations}
