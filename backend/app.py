@@ -10,6 +10,21 @@ scaler = joblib.load("models/scaler_cb.pkl")
 knn = joblib.load("models/knn_model.pkl")
 df = pd.read_csv("data/df_clean.csv", sep=';', index_col="Monture_ID")
 
+# 🔧 Vérifier et nettoyer la colonne 'Taille' si nécessaire
+if "Taille" in df.columns:
+    df['Taille'] = df['Taille'].astype(str).str.replace(r'\s+', '', regex=True)
+    taille_split = df['Taille'].str.split('-', expand=True)
+
+    for i in range(3):
+        if i not in taille_split.columns:
+            taille_split[i] = 0
+
+    df['Taille_Lens'] = pd.to_numeric(taille_split[0], errors='coerce')
+    df['Taille_Bridge'] = pd.to_numeric(taille_split[1], errors='coerce')
+    df['Taille_Temple'] = pd.to_numeric(taille_split[2], errors='coerce')
+
+    df.drop(columns=['Taille'], inplace=True)
+
 # Init API
 app = FastAPI(
     title="API Recommandation Montures",
