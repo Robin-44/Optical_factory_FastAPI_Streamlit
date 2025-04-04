@@ -1,0 +1,26 @@
+# 🧠 Ne pas inclure les notebooks
+notebooks/
+
+# 🧹 Dossiers courants à ignorer
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.tmp
+
+# 💻 Environnement local
+.env
+.venv/
+optical_factory_env/
+*.sqlite3
+
+# 🚫 Éviter les dossiers système ou IDE
+.DS_Store
+.idea/
+.vscode/
+
+# 🛑 Git ignore
+.git
+.gitignore
+*.gitkeep
