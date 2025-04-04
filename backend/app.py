@@ -10,7 +10,7 @@ scaler = joblib.load("models/scaler_cb.pkl")
 knn = joblib.load("models/knn_model.pkl")
 df = pd.read_csv("data/df_clean.csv", sep=';', index_col="Monture_ID")
 
-# 🔧 Vérifier et nettoyer la colonne 'Taille' si nécessaire
+# 🔧 Nettoyage si la colonne "Taille" existe
 if "Taille" in df.columns:
     df['Taille'] = df['Taille'].astype(str).str.replace(r'\s+', '', regex=True)
     taille_split = df['Taille'].str.split('-', expand=True)
@@ -25,7 +25,7 @@ if "Taille" in df.columns:
 
     df.drop(columns=['Taille'], inplace=True)
 
-# Init API
+# Init de l'API
 app = FastAPI(
     title="API Recommandation Montures",
     description="🔎 Cette API recommande des montures en fonction du profil utilisateur saisi dans un formulaire. Elle repose sur un modèle KNN pré-entraîné.",
@@ -40,7 +40,6 @@ app = FastAPI(
         "url": "https://opensource.org/licenses/MIT"
     }
 )
-
 
 # Schéma d’entrée utilisateur
 class ProfilUtilisateur(BaseModel):
@@ -81,7 +80,6 @@ def info():
         "endpoint_recommandation": "POST /recommander"
     }
 
-
 @app.post("/recommander")
 def recommander(profil: ProfilUtilisateur):
     # ✅ Encodage
@@ -90,20 +88,26 @@ def recommander(profil: ProfilUtilisateur):
     profil_num = scaler.transform(data[['Age', 'Taille_Lens', 'Taille_Bridge', 'Taille_Temple']])
     profil_encoded = np.hstack([profil_cat, profil_num])
 
-
     # Recommandation
     distances, indices = knn.kneighbors(profil_encoded)
     ids = df.index[indices[0]].tolist()
 
+    # ✅ Supprimer les doublons tout en conservant l’ordre
+    ids = list(dict.fromkeys(ids))
+
     recommandations = []
     for id_ in ids:
         m = df.loc[id_]
+        if isinstance(m, pd.DataFrame):  # Si plusieurs lignes pour une même monture
+            m = m.iloc[0]
+
         recommandations.append({
             "id": id_,
             "Marque": str(m["Marque"]),
             "Forme": str(m["Forme"]),
             "Style": str(m["Style"]),
             "Couleur": str(m["Couleur"]),
+            "Materiau": str(m["Materiau"])
         })
 
     return {"montures_recommandees": recommandations}
